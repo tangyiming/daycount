@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title data-i18n="opt.title">倒数日 · 设置与数据</title>
+  <link rel="stylesheet" href="../src/theme.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <img src="../icons/icon48.png" alt="" width="40" height="40" />
+      <div>
+        <h1>倒数日 <span class="en">DayCount</span></h1>
+        <p class="muted" data-i18n="app.tagline">设置与数据备份。所有数据只保存在本机浏览器中，不会上传到任何服务器。</p>
+      </div>
+    </header>
+
+    <section class="card section">
+      <h2 data-i18n="opt.language">界面语言</h2>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span data-i18n="opt.language">界面语言</span>
+          <small data-i18n="opt.language.desc">Language of the interface</small>
+        </div>
+        <select id="s-language" class="input lang-select">
+          <option value="auto" data-i18n="opt.language.auto">跟随浏览器</option>
+          <option value="zh">简体中文</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card section" id="pro-section">
+      <h2 data-i18n="opt.pro">Pro</h2>
+      <p class="muted desc" id="pro-desc"></p>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span id="pro-status"></span>
+          <small id="pro-features" data-i18n="opt.pro.features">无限事件 · 农历 · 到期提醒</small>
+        </div>
+        <button id="btn-pro-clear" class="btn small hidden" data-i18n="opt.pro.clear">移除激活</button>
+      </div>
+
+      <div id="pro-pay">
+        <p class="muted desc" id="pro-pay-hint"></p>
+        <div id="pro-wallets"></div>
+        <p class="muted desc pay-mail">
+          <a id="pro-mail" href="#"></a>
+        </p>
+        <div class="redeem-row">
+          <input id="pro-code" class="input" type="text" spellcheck="false" autocomplete="off" data-i18n-placeholder="opt.pro.code.ph" placeholder="DC-XXXXXX-XXXXXXXX" />
+          <button id="btn-pro-redeem" class="btn primary" data-i18n="opt.pro.redeem">兑换</button>
+        </div>
+      </div>
+
+      <div class="switch-row hidden" id="pro-dev-row">
+        <div class="switch-text">
+          <span data-i18n="opt.pro.dev">开发者解锁 Pro</span>
+          <small data-i18n="opt.pro.dev.desc">仅未打包的扩展可见，方便本地调试，不会随安装包生效</small>
+        </div>
+        <label class="switch"><input type="checkbox" id="s-pro-dev" /><span class="track"></span></label>
+      </div>
+      <div class="switch-row hidden" id="pro-mint-row">
+        <div class="switch-text">
+          <span data-i18n="opt.pro.mint">生成兑换码</span>
+          <small id="pro-mint-out" class="mono"></small>
+        </div>
+        <button id="btn-pro-mint" class="btn small" data-i18n="opt.pro.mint.btn">生成并复制</button>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2 data-i18n="opt.remind">提醒</h2>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span data-i18n="opt.remind.time">每日提醒时间</span>
+          <small data-i18n="opt.remind.time.desc">开启到期提醒的事件会在这个时间发送系统通知</small>
+        </div>
+        <input id="s-remind-time" type="time" class="input time" />
+      </div>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span data-i18n="opt.notif">通知权限</span>
+          <small id="notif-status" data-i18n="opt.notif.checking">检测中…</small>
+        </div>
+        <button id="btn-test-notif" class="btn small" data-i18n="opt.notif.test">发送测试通知</button>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2 data-i18n="opt.display">显示</h2>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span data-i18n="opt.badge">图标角标显示天数</span>
+          <small data-i18n="opt.badge.desc">在浏览器工具栏图标上显示置顶（或最近）事件的天数</small>
+        </div>
+        <label class="switch"><input type="checkbox" id="s-badge" /><span class="track"></span></label>
+      </div>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span data-i18n="opt.includeToday">正数纪念包含当天</span>
+          <small data-i18n="opt.includeToday.desc">开启后起始日算作第 1 天（如出生当天即“已经 1 天”）</small>
+        </div>
+        <label class="switch"><input type="checkbox" id="s-include-today" /><span class="track"></span></label>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2 data-i18n="opt.backup">数据备份</h2>
+      <p class="muted desc"><span data-i18n="opt.backup.desc.before">导出为 JSON 文件即可备份；在另一台电脑或重装浏览器后可再导入恢复。当前共 </span><b id="count">0</b><span data-i18n="opt.backup.desc.after"> 个事件。</span></p>
+      <div class="actions">
+        <button id="btn-export" class="btn primary" data-i18n="opt.export">导出为 JSON</button>
+        <button id="btn-import" class="btn" data-i18n="opt.import">导入 JSON…</button>
+        <input id="file-import" type="file" accept=".json,application/json" hidden />
+      </div>
+      <div class="import-mode">
+        <label><input type="radio" name="mode" value="merge" checked /> <span data-i18n="opt.import.merge">合并导入（相同 ID 的事件会被覆盖）</span></label>
+        <label><input type="radio" name="mode" value="replace" /> <span data-i18n="opt.import.replace">替换导入（先清空现有数据）</span></label>
+      </div>
+      <pre id="import-log" class="log hidden"></pre>
+    </section>
+
+    <section class="card section danger-zone">
+      <h2 data-i18n="opt.danger">危险操作</h2>
+      <div class="switch-row">
+        <div class="switch-text">
+          <span data-i18n="opt.clear">清空所有事件</span>
+          <small data-i18n="opt.clear.desc">删除本机保存的全部倒数日数据，建议先导出备份</small>
+        </div>
+        <button id="btn-clear" class="btn danger small" data-i18n="opt.clear.btn">清空</button>
+      </div>
+    </section>
+
+    <footer class="muted foot">倒数日 · DayCount v<span id="version"></span> · <span data-i18n="opt.foot">支持阳历 / 农历（1900–2100）</span></footer>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

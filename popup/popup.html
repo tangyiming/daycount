@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title data-i18n="app.name">倒数日</title>
+  <link rel="stylesheet" href="../src/theme.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- 首页：列表 -->
+    <section id="view-home" class="view">
+      <header class="topbar">
+        <div class="brand">
+          <img src="../icons/icon32.png" alt="" width="22" height="22" />
+          <span data-i18n="app.name">倒数日</span>
+          <span id="today-line" class="today-line"></span>
+        </div>
+        <div class="topbar-actions">
+          <button id="btn-lang" class="icon-btn lang-btn" data-i18n-title="common.language" title="切换语言 / Language">中</button>
+          <button id="btn-pro" class="icon-btn pro-btn hidden" data-i18n-title="opt.pro.upgrade" title="升级 Pro">Pro</button>
+          <button id="btn-settings" class="icon-btn" data-i18n-title="common.settings" title="设置与数据备份">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          </button>
+          <button id="btn-add" class="btn primary small">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            <span data-i18n="common.new">新建</span>
+          </button>
+        </div>
+      </header>
+
+      <div id="hero"></div>
+
+      <div id="filters" class="chips filters"></div>
+
+      <ul id="list" class="list"></ul>
+
+      <div id="empty" class="empty hidden">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <p class="empty-title" data-i18n="home.empty.title">还没有任何倒数日</p>
+        <p class="empty-desc" data-i18n="home.empty.desc">添加生日、纪念日、考试、发薪日……每天打开浏览器就能看到。</p>
+        <button id="btn-add-empty" class="btn primary" data-i18n="home.empty.cta">添加第一个事件</button>
+      </div>
+
+      <footer class="foot muted" id="foot"></footer>
+    </section>
+
+    <!-- 新建 / 编辑 -->
+    <section id="view-edit" class="view hidden">
+      <header class="topbar">
+        <button id="btn-back" class="icon-btn" data-i18n-title="common.back" title="返回">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <h2 id="edit-heading">新建事件</h2>
+        <button id="btn-save" class="btn primary small" data-i18n="common.save">保存</button>
+      </header>
+
+      <div id="preview" class="preview card"></div>
+
+      <form id="form" autocomplete="off">
+        <div class="field">
+          <label for="f-title" data-i18n="edit.title">标题</label>
+          <input id="f-title" class="input" maxlength="60" data-i18n-placeholder="edit.title.placeholder" placeholder="例如：结婚纪念日、宝宝出生、考研倒计时" required />
+        </div>
+
+        <div class="field">
+          <div class="field-head">
+            <span class="field-label" data-i18n="edit.date">日期</span>
+            <div class="segmented mini" id="f-calendar">
+              <button type="button" data-value="solar" class="active" data-i18n="edit.calendar.solar">阳历</button>
+              <button type="button" data-value="lunar" data-i18n="edit.calendar.lunar">农历</button>
+            </div>
+          </div>
+          <div class="cal" id="cal">
+            <div class="cal-head">
+              <button type="button" id="cal-prev" class="icon-btn" data-i18n-title="cal.prev" title="上一月">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button type="button" id="cal-title" class="cal-title" data-i18n-title="cal.pick.month" title="选择月份"></button>
+              <button type="button" id="cal-today" class="cal-today" data-i18n="cal.today" data-i18n-title="cal.today.hint" title="回到今天">今</button>
+              <button type="button" id="cal-next" class="icon-btn" data-i18n-title="cal.next" title="下一月">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="cal-dows" id="cal-dows"></div>
+            <div class="cal-grid" id="cal-grid"></div>
+          </div>
+          <small id="date-hint" class="muted"></small>
+        </div>
+
+        <div class="field">
+          <label for="f-repeat" data-i18n="edit.repeat">循环</label>
+          <select id="f-repeat" class="input">
+            <option value="none" data-i18n="repeat.none">不重复</option>
+            <option value="day" data-i18n="repeat.day">每天</option>
+            <option value="week" data-i18n="repeat.week">每周</option>
+            <option value="month" data-i18n="repeat.month">每月</option>
+            <option value="year" data-i18n="repeat.year">每年</option>
+            <option value="custom" data-i18n="repeat.custom">自定义…</option>
+          </select>
+          <div id="repeat-custom" class="row interval-row hidden">
+            <span class="every-prefix" data-i18n="edit.repeat.every">每</span>
+            <input id="f-every" class="input every-num" type="number" min="1" max="999" step="1" value="1" />
+            <select id="f-repeat-unit" class="input">
+              <option value="day">天</option>
+              <option value="week">周</option>
+              <option value="month">个月</option>
+              <option value="year">年</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-display" data-i18n="edit.display">显示方式</label>
+          <select id="f-display" class="input">
+            <option value="days" data-i18n="display.days">天</option>
+            <option value="weeks" data-i18n="display.weeks">周 + 天</option>
+            <option value="months" data-i18n="display.months">月 + 天</option>
+            <option value="years" data-i18n="display.years">年 + 月 + 天</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <span class="field-label" data-i18n="edit.tag">标签</span>
+          <div id="f-tags" class="chips"></div>
+          <input id="f-tag-custom" class="input hidden" maxlength="12" data-i18n-placeholder="edit.tag.custom.placeholder" placeholder="输入自定义标签名" />
+        </div>
+
+        <div class="field">
+          <div class="switch-row compact">
+            <span class="field-label" data-i18n="edit.remind">到期提醒</span>
+            <label class="switch"><input type="checkbox" id="f-remind" /><span class="track"></span></label>
+          </div>
+          <div id="remind-options" class="remind-panel hidden">
+            <div id="remind-list" class="stack-list hidden"></div>
+            <select id="remind-add" class="input"></select>
+            <div id="remind-custom" class="row interval-row hidden">
+              <span id="rule-prefix" class="every-prefix"></span>
+              <input id="rule-n" class="input every-num" type="number" min="0" max="9999" step="1" value="1" />
+              <select id="rule-unit" class="input"></select>
+              <button type="button" id="rule-add" class="btn small" data-i18n="edit.remind.add.ok">添加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="switch-row">
+            <div class="switch-text">
+              <span data-i18n="edit.pin">置顶显示</span>
+              <small data-i18n="edit.pin.desc">占顶部大卡片和图标角标。同时只能置顶 1 个，开启会替换当前置顶。</small>
+            </div>
+            <label class="switch"><input type="checkbox" id="f-pinned" /><span class="track"></span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-note" data-i18n="edit.note">备注</label>
+          <textarea id="f-note" class="input" maxlength="500" data-i18n-placeholder="common.optional" placeholder="可选"></textarea>
+        </div>
+      </form>
+
+      <div class="edit-foot">
+        <button id="btn-delete" class="btn danger hidden" data-i18n="edit.delete">删除此事件</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

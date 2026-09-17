@@ -1,0 +1,5 @@
+{
+  "appName": { "message": "倒数日 - DayCount" },
+  "appShort": { "message": "倒数日" },
+  "appDesc": { "message": "记录纪念日、倒数日与重要事件，支持阳历/农历、到期提醒与正数纪念，数据仅保存在本地，支持导入导出。" }
+}
