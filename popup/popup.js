@@ -802,10 +802,6 @@ function bindEditor() {
     const d = state.draft;
     const next = btn.dataset.value;
     if (next === d.calendar) return;
-    if (next === "lunar" && !state.pro) {
-      askPro("lunar");
-      return;
-    }
     if (next === "lunar") d.lunar = solarToLunar(d.solar) || d.lunar;
     else d.solar = lunarToSolar(d.lunar) || d.solar;
     d.calendar = next;
@@ -853,13 +849,6 @@ function bindEditor() {
   $("#f-display").addEventListener("change", (e) => { state.draft.display = e.target.value; renderPreview(); });
   $("#f-tag-custom").addEventListener("input", (e) => { state.draft.tag = e.target.value.trim(); fillTagsLite(); renderPreview(); });
   $("#f-remind").addEventListener("change", (e) => {
-    if (e.target.checked && !state.pro) {
-      e.target.checked = false;
-      state.draft.remind.enabled = false;
-      fillRemindOptions();
-      askPro("remind");
-      return;
-    }
     state.draft.remind.enabled = e.target.checked;
     fillRemindOptions();
   });

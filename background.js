@@ -2,7 +2,6 @@
 import { computeEvent, today, ymdToStr, describeDate, dayNumber, subtractUnits, matchEvery, sameYmd } from "./src/dates.js";
 import { loadEvents, loadSettings, saveSettings, tagColor, ruleDays } from "./src/store.js";
 import { t, setLang, resolveLang } from "./src/i18n.js";
-import { getPro } from "./src/pro.js";
 
 const ALARM_DAILY = "daycount-daily-reminder";
 const ALARM_MIDNIGHT = "daycount-midnight-refresh";
@@ -99,9 +98,8 @@ function pruneNotified(notified, base) {
 }
 
 async function runReminderCheck({ force = false } = {}) {
-  const [events, settings, pro] = await Promise.all([loadEvents(), loadSettings(), getPro()]);
+  const [events, settings] = await Promise.all([loadEvents(), loadSettings()]);
   setLang(resolveLang(settings.language));
-  if (!pro.paid) return;
   const base = today();
   const todayStr = ymdToStr(base);
   const notified = pruneNotified(settings.notified || {}, base);

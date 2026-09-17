@@ -84,7 +84,7 @@ const zh = {
   "edit.deleted": "已删除",
 
   "pro.badge": "Pro",
-  "pro.need.limit": "免费版最多 {n} 个事件。到设置页转 USDT 兑换 Pro",
+  "pro.need.limit": "免费版最多 {n} 个事件，解锁 Pro 可无限添加",
   "pro.need.lunar": "农历是 Pro 功能",
   "pro.need.remind": "到期提醒是 Pro 功能",
 
@@ -177,8 +177,8 @@ const zh = {
   "opt.pro": "Pro",
   "opt.pro.free": "免费版",
   "opt.pro.active": "已解锁 Pro",
-  "opt.pro.desc": "免费版可添加 {n} 个事件。Pro 解锁无限事件、农历与到期提醒。",
-  "opt.pro.features": "无限事件 · 农历 · 到期提醒",
+  "opt.pro.desc": "免费版可添加 {n} 个事件，农历、提醒等功能均可使用。超过 {n} 个需解锁 Pro。",
+  "opt.pro.features": "无限事件",
   "opt.pro.upgrade": "升级 Pro",
   "opt.pro.pay.hint": "转账 {n} USDT。到账后把交易哈希发到 {email}，会收到兑换码。",
   "opt.pro.pay.mail": "把交易哈希发到 {email}",
@@ -322,7 +322,7 @@ const en = {
   "edit.deleted": "Deleted",
 
   "pro.badge": "Pro",
-  "pro.need.limit": "Free plan includes {n} events. Open Settings to pay with USDT for Pro.",
+  "pro.need.limit": "Free plan includes {n} events. Unlock Pro for unlimited events.",
   "pro.need.lunar": "Lunar calendar is a Pro feature",
   "pro.need.remind": "Reminders are a Pro feature",
 
@@ -410,8 +410,8 @@ const en = {
   "opt.pro": "Pro",
   "opt.pro.free": "Free",
   "opt.pro.active": "Pro unlocked",
-  "opt.pro.desc": "Free plan includes {n} events. Pro unlocks unlimited events, lunar calendar, and reminders.",
-  "opt.pro.features": "Unlimited events · Lunar · Reminders",
+  "opt.pro.desc": "Free plan includes {n} events with all features. Unlock Pro to add more than {n}.",
+  "opt.pro.features": "Unlimited events",
   "opt.pro.upgrade": "Upgrade to Pro",
   "opt.pro.pay.hint": "Send {n} USDT. Email the transaction hash to {email} for a license code.",
   "opt.pro.pay.mail": "Email the tx hash to {email}",
