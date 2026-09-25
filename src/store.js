@@ -64,8 +64,6 @@ export const DEFAULT_SETTINGS = {
   badge: "top",          // top: 图标角标显示首个事件天数；none: 不显示
   lastCheckDate: "",     // 上次执行提醒检查的日期
   notified: {},          // 已发送提醒记录 { "eventId|date|offset": true }
-  proDev: false,         // 仅未打包扩展：开发者强制解锁 Pro
-  proLicense: "",        // 兑换码解锁 Pro
 };
 
 export function tagColor(name) {

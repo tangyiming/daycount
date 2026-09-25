@@ -5,7 +5,6 @@ import {
   REMIND_BEFORE_PRESETS, REMIND_EVERY_PRESETS, REMIND_BEFORE_UNITS, REMIND_EVERY_UNITS,
 } from "../src/store.js";
 import { t, tagLabel, initI18n, setLang, getLang, applyDom } from "../src/i18n.js";
-import { getPro, canAddEvent, FREE_EVENT_LIMIT } from "../src/pro.js";
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -19,7 +18,6 @@ const state = {
   remindCustomOpen: false,
   calCursor: null,
   calView: "day",
-  pro: false,
 };
 
 // ---------- 工具 ----------
@@ -41,27 +39,16 @@ function el(tag, attrs = {}, children = []) {
 }
 
 let toastTimer = null;
+function openDonate() {
+  chrome.tabs.create({ url: chrome.runtime.getURL("options/options.html#donate") });
+}
+
 function toast(msg) {
   const tt = $("#toast");
   tt.textContent = msg;
   tt.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => tt.classList.remove("show"), 1800);
-}
-
-async function refreshPro() {
-  const pro = await getPro();
-  state.pro = !!pro.paid;
-  const btn = $("#btn-pro");
-  if (btn) {
-    btn.classList.toggle("hidden", state.pro);
-    btn.title = t("opt.pro.upgrade");
-  }
-}
-
-function askPro(reason) {
-  toast(t("pro.need." + reason, { n: FREE_EVENT_LIMIT }));
-  chrome.runtime.openOptionsPage();
 }
 
 function lighten(hex, amount = 0.25) {
@@ -241,8 +228,6 @@ function renderHome() {
   node.title = lunarNow ? `${line} · ${t("date.today.lunar", { v: formatLunar(lunarNow) })}` : line;
   fitTodayLine();
   $("#btn-lang").textContent = getLang() === "zh" ? "EN" : "中";
-  $("#btn-pro").classList.toggle("hidden", !!state.pro);
-  $("#btn-pro").title = t("opt.pro.upgrade");
 
   const all = sortedEvents();
   renderFilters();
@@ -274,10 +259,6 @@ function blankDraft() {
 }
 
 function openEditor(id) {
-  if (!id && !canAddEvent(state.events, null, state.pro)) {
-    askPro("limit");
-    return;
-  }
   state.editingId = id || null;
   if (id) {
     const e = state.events.find((x) => x.id === id);
@@ -850,6 +831,13 @@ function bindEditor() {
   $("#f-tag-custom").addEventListener("input", (e) => { state.draft.tag = e.target.value.trim(); fillTagsLite(); renderPreview(); });
   $("#f-remind").addEventListener("change", (e) => {
     state.draft.remind.enabled = e.target.checked;
+    if (e.target.checked && remindKind() === "before" && !state.draft.remind.before.length) {
+      state.draft.remind.before = [{ n: 0, unit: "day" }];
+    }
+    if (e.target.checked && remindKind() === "every" && !state.draft.remind.every.length) {
+      state.draft.remind.every = [{ n: 1, unit: "year" }];
+      toast(t("edit.remind.default.every"));
+    }
     fillRemindOptions();
   });
   $("#remind-add").addEventListener("change", (e) => {
@@ -909,10 +897,6 @@ async function save() {
   d.title = d.title.trim();
   if (!d.title) { toast(t("edit.need.title")); $("#f-title").focus(); return; }
   if (!d.tag) d.tag = "其他";
-  if (!canAddEvent(state.events, state.editingId, state.pro)) {
-    askPro("limit");
-    return;
-  }
   const payload = { ...d };
   if (payload.calendar === "solar") delete payload.lunar;
   else delete payload.solar;
@@ -949,7 +933,6 @@ function applyLanguage() {
 // ---------- 初始化 ----------
 async function reload() {
   [state.events, state.settings] = await Promise.all([loadEvents(), loadSettings()]);
-  await refreshPro();
   const lang = state.settings.language === "zh" || state.settings.language === "en" ? state.settings.language : null;
   if (lang && lang !== getLang()) { setLang(lang); applyDom(); }
   renderHome();
@@ -960,7 +943,8 @@ function bindHome() {
   $("#btn-add-empty").addEventListener("click", () => openEditor(null));
   $("#btn-settings").addEventListener("click", () => chrome.runtime.openOptionsPage());
   $("#btn-lang").addEventListener("click", toggleLang);
-  $("#btn-pro").addEventListener("click", () => askPro("limit"));
+  $("#btn-donate").addEventListener("click", openDonate);
+  $("#btn-donate-foot").addEventListener("click", openDonate);
 }
 
 async function init() {

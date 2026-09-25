@@ -5,7 +5,8 @@ import { t, setLang, resolveLang } from "./src/i18n.js";
 
 const ALARM_DAILY = "daycount-daily-reminder";
 const ALARM_MIDNIGHT = "daycount-midnight-refresh";
-const ICON = "icons/icon128.png";
+const ALARM_WATCHDOG = "daycount-reminder-watchdog";
+const ICON = chrome.runtime.getURL("icons/icon128.png");
 
 // ---------- 调度 ----------
 function nextTimeToday(hhmm) {
@@ -25,6 +26,16 @@ async function scheduleMidnight() {
   const now = new Date();
   const t = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 10, 0);
   await chrome.alarms.create(ALARM_MIDNIGHT, { when: t.getTime(), periodInMinutes: 24 * 60 });
+}
+
+async function scheduleWatchdog() {
+  await chrome.alarms.create(ALARM_WATCHDOG, { periodInMinutes: 30 });
+}
+
+function pastRemindTime(hhmm) {
+  const [h, m] = (hhmm || "09:00").split(":").map((n) => parseInt(n, 10));
+  const now = new Date();
+  return now.getHours() > h || (now.getHours() === h && now.getMinutes() >= (m || 0));
 }
 
 // ---------- 角标 ----------
@@ -153,23 +164,20 @@ function eventBody(e, c) {
   return describeDate(c.target, { primaryLunar: e.calendar === "lunar" }) + (e.note ? `\n${e.note}` : "");
 }
 
-/** 浏览器在提醒时间点未运行时，启动后补发当天的提醒。 */
-async function catchUpReminder() {
+/** 过了每日提醒点后补发当天到期的提醒（已发过的不会重复）。 */
+async function catchUpReminder({ ignoreLastCheck = false } = {}) {
   const s = await loadSettings();
   const todayStr = ymdToStr(today());
-  if (s.lastCheckDate === todayStr) return;
-  const [h, m] = (s.remindTime || "09:00").split(":").map((n) => parseInt(n, 10));
-  const now = new Date();
-  const passed = now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m);
-  if (passed) await runReminderCheck();
+  if (!ignoreLastCheck && s.lastCheckDate === todayStr) return;
+  if (pastRemindTime(s.remindTime)) await runReminderCheck();
 }
 
 // ---------- 事件绑定 ----------
 async function boot() {
   await chrome.alarms.clear("daycount-precise-reminder");
-  await Promise.all([scheduleDaily(), scheduleMidnight()]);
+  await Promise.all([scheduleDaily(), scheduleMidnight(), scheduleWatchdog()]);
   await updateBadge();
-  await catchUpReminder();
+  await catchUpReminder({ ignoreLastCheck: true });
 }
 
 chrome.runtime.onInstalled.addListener(() => { boot(); });
@@ -181,6 +189,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     await updateBadge();
   } else if (alarm.name === ALARM_MIDNIGHT) {
     await updateBadge();
+  } else if (alarm.name === ALARM_WATCHDOG) {
+    await updateBadge();
+    await catchUpReminder();
   }
 });
 
@@ -188,6 +199,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area !== "local") return;
   if (changes.events) {
     await updateBadge();
+    await catchUpReminder({ ignoreLastCheck: true });
   }
   if (changes.settings) {
     const oldV = changes.settings.oldValue || {};
@@ -223,5 +235,6 @@ chrome.notifications.onClicked.addListener(async (id) => {
   }
 });
 
-// Service worker 被唤醒时也刷新一次角标（例如日期已变化）
+// Service worker 被唤醒时刷新角标，并补发可能漏掉的当天提醒
 updateBadge();
+catchUpReminder();

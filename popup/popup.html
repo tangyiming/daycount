@@ -18,7 +18,7 @@
         </div>
         <div class="topbar-actions">
           <button id="btn-lang" class="icon-btn lang-btn" data-i18n-title="common.language" title="切换语言 / Language">中</button>
-          <button id="btn-pro" class="icon-btn pro-btn hidden" data-i18n-title="opt.pro.upgrade" title="升级 Pro">Pro</button>
+          <button id="btn-donate" class="icon-btn donate-btn" data-i18n-title="home.donate.title" title="打赏开发者">☕</button>
           <button id="btn-settings" class="icon-btn" data-i18n-title="common.settings" title="设置与数据备份">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
           </button>
@@ -44,7 +44,10 @@
         <button id="btn-add-empty" class="btn primary" data-i18n="home.empty.cta">添加第一个事件</button>
       </div>
 
-      <footer class="foot muted" id="foot"></footer>
+      <footer class="foot">
+        <button type="button" id="btn-donate-foot" class="donate-link" data-i18n="home.donate">喜欢就请开发者喝杯咖啡 →</button>
+        <div class="muted" id="foot"></div>
+      </footer>
     </section>
 
     <!-- 新建 / 编辑 -->

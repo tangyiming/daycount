@@ -79,13 +79,27 @@ body {
   font-weight: 600;
   letter-spacing: 0.2px;
 }
-.pro-btn {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  color: var(--primary);
+.donate-btn {
+  font-size: 14px;
   width: auto;
-  padding: 0 8px;
+  padding: 0 6px;
+}
+.donate-link {
+  display: block;
+  width: 100%;
+  margin: 0 0 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+.donate-link:hover {
+  text-decoration: underline;
 }
 .empty-desc {
   white-space: pre-line;

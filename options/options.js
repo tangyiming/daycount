@@ -1,6 +1,6 @@
 import { loadEvents, saveEvents, loadSettings, saveSettings, buildExport, parseImport, mergeEvents } from "../src/store.js";
 import { t, initI18n, setLang, resolveLang, applyDom } from "../src/i18n.js";
-import { getPro, setDevPro, clearPro, isUnpacked, FREE_EVENT_LIMIT, USDT_AMOUNT, PAY_EMAIL, USDT_WALLETS, redeemLicense, mintLicense, payMailto } from "../src/pro.js";
+import { USDT_WALLETS } from "../src/pro.js";
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -40,11 +40,12 @@ function renderNotificationStatus() {
 function applyLanguage() {
   applyDom();
   renderNotificationStatus();
-  renderPro();
+  renderWallets();
 }
 
 function renderWallets() {
-  const box = $("#pro-wallets");
+  const box = $("#donate-wallets");
+  if (!box) return;
   box.replaceChildren();
   for (const w of USDT_WALLETS) {
     const addr = document.createElement("div");
@@ -52,11 +53,11 @@ function renderWallets() {
     addr.textContent = w.address;
     const copy = document.createElement("button");
     copy.className = "btn small";
-    copy.textContent = t("opt.pro.copy");
+    copy.textContent = t("opt.donate.copy");
     copy.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(w.address);
-        toast(t("opt.pro.copied"));
+        toast(t("opt.donate.copied"));
       } catch {
         toast(w.address);
       }
@@ -71,70 +72,6 @@ function renderWallets() {
     row.append(text, copy);
     box.append(row);
   }
-}
-
-async function renderPro() {
-  const pro = await getPro();
-  $("#pro-desc").textContent = t("opt.pro.desc", { n: FREE_EVENT_LIMIT });
-  let status = t("opt.pro.free");
-  if (pro.source === "dev") status = t("opt.pro.active") + " · dev";
-  else if (pro.source === "license") status = t("opt.pro.active");
-  else if (pro.paid) status = t("opt.pro.active");
-  $("#pro-status").textContent = status;
-  $("#btn-pro-clear").classList.toggle("hidden", !pro.paid);
-  $("#pro-pay").classList.toggle("hidden", !!pro.paid);
-  $("#pro-pay-hint").textContent = t("opt.pro.pay.hint", { n: USDT_AMOUNT, email: PAY_EMAIL });
-  const mail = $("#pro-mail");
-  mail.href = payMailto();
-  mail.textContent = t("opt.pro.pay.mail", { email: PAY_EMAIL });
-  renderWallets();
-  const unpacked = isUnpacked();
-  $("#pro-dev-row").classList.toggle("hidden", !unpacked);
-  $("#pro-mint-row").classList.toggle("hidden", !unpacked);
-  if (unpacked) {
-    const s = await loadSettings();
-    $("#s-pro-dev").checked = !!s.proDev;
-  }
-}
-
-async function initPro() {
-  await renderPro();
-  $("#btn-pro-redeem").addEventListener("click", async () => {
-    const code = $("#pro-code").value;
-    if (!String(code || "").trim()) {
-      toast(t("opt.pro.redeem.empty"));
-      return;
-    }
-    const ok = await redeemLicense(code);
-    toast(t(ok ? "opt.pro.redeem.ok" : "opt.pro.redeem.bad"));
-    if (ok) {
-      $("#pro-code").value = "";
-      await renderPro();
-    }
-  });
-  $("#pro-code").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") $("#btn-pro-redeem").click();
-  });
-  $("#s-pro-dev").addEventListener("change", async (e) => {
-    await setDevPro(e.target.checked);
-    toast(t(e.target.checked ? "opt.pro.dev.on" : "opt.pro.dev.off"));
-    await renderPro();
-  });
-  $("#btn-pro-clear").addEventListener("click", async () => {
-    await clearPro();
-    toast(t("opt.pro.clear.ok"));
-    await renderPro();
-  });
-  $("#btn-pro-mint").addEventListener("click", async () => {
-    const code = await mintLicense();
-    $("#pro-mint-out").textContent = code;
-    try {
-      await navigator.clipboard.writeText(code);
-      toast(t("opt.pro.mint.copied"));
-    } catch {
-      toast(code);
-    }
-  });
 }
 
 async function initSettings() {
@@ -240,10 +177,13 @@ async function init() {
   applyDom();
   $("#version").textContent = chrome.runtime.getManifest().version;
   await initSettings();
-  await initPro();
+  renderWallets();
   initNotification();
   initBackup();
   await refreshCount();
+  if (location.hash === "#donate") {
+    $("#donate-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
   chrome.storage.onChanged.addListener(async (changes, area) => {
     if (area !== "local") return;
     if (changes.events) refreshCount();
@@ -254,8 +194,6 @@ async function init() {
         setLang(resolveLang(newL));
         applyLanguage();
         $("#s-language").value = newL || "auto";
-      } else {
-        renderPro();
       }
     }
   });
