@@ -31,6 +31,15 @@
 
       <div id="hero"></div>
 
+      <div id="review-prompt" class="review-prompt hidden">
+        <div class="review-copy">
+          <b data-i18n="home.review.title">觉得倒数日好用吗？</b>
+          <span data-i18n="home.review.desc">去 Chrome 商店留个评价，帮更多人看到。</span>
+        </div>
+        <button type="button" id="btn-review-go" class="btn small" data-i18n="home.review.go">去评价</button>
+        <button type="button" id="btn-review-hide" class="icon-btn review-hide" data-i18n-title="home.review.hide" title="关闭">×</button>
+      </div>
+
       <div id="filters" class="chips filters"></div>
 
       <ul id="list" class="list"></ul>
@@ -45,7 +54,6 @@
       </div>
 
       <footer class="foot">
-        <button type="button" id="btn-donate-foot" class="donate-link" data-i18n="home.donate">喜欢就请开发者喝杯咖啡 →</button>
         <div class="muted" id="foot"></div>
       </footer>
     </section>
@@ -167,6 +175,7 @@
       <div class="edit-foot">
         <button id="btn-delete" class="btn danger hidden" data-i18n="edit.delete">删除此事件</button>
       </div>
+      <button type="button" id="btn-donate-edit" class="donate-link" data-i18n="edit.donate">觉得有用的话，请开发者喝杯咖啡 →</button>
     </section>
   </div>
 

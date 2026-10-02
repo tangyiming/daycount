@@ -2,7 +2,7 @@ import { computeEvent, describeDate, today, ymdToStr, formatDaysHuman, weekdayNa
 import { solarToLunar, lunarToSolar, lunarYearInfo, lunarMonthName, lunarDayName, formatLunar, LUNAR_MIN_YEAR, LUNAR_MAX_YEAR } from "../src/lunar.js";
 import {
   loadEvents, loadSettings, saveSettings, upsertEvent, deleteEvent, BUILTIN_TAGS, tagColor, newId, ruleDays,
-  REMIND_BEFORE_PRESETS, REMIND_EVERY_PRESETS, REMIND_BEFORE_UNITS, REMIND_EVERY_UNITS,
+  REMIND_BEFORE_PRESETS, REMIND_EVERY_PRESETS, REMIND_BEFORE_UNITS, REMIND_EVERY_UNITS, STORE_REVIEW_URL,
 } from "../src/store.js";
 import { t, tagLabel, initI18n, setLang, getLang, applyDom } from "../src/i18n.js";
 
@@ -41,6 +41,15 @@ function el(tag, attrs = {}, children = []) {
 let toastTimer = null;
 function openDonate() {
   chrome.tabs.create({ url: chrome.runtime.getURL("options/options.html#donate") });
+}
+
+function openStoreReview() {
+  chrome.tabs.create({ url: STORE_REVIEW_URL });
+}
+
+async function hideReviewPrompt() {
+  state.settings = await saveSettings({ reviewPromptHidden: true });
+  $("#review-prompt").classList.add("hidden");
 }
 
 function toast(msg) {
@@ -236,6 +245,7 @@ function renderHome() {
   renderList(items.slice(1));
   $("#empty").classList.toggle("hidden", state.events.length > 0);
   $("#list").classList.toggle("hidden", state.events.length === 0);
+  $("#review-prompt").classList.toggle("hidden", state.events.length < 5 || !!state.settings.reviewPromptHidden);
   $("#foot").textContent = state.events.length ? t("home.foot", { n: state.events.length }) : "";
 }
 
@@ -871,6 +881,7 @@ function bindEditor() {
 
   $("#btn-back").addEventListener("click", () => showView("view-home"));
   $("#btn-save").addEventListener("click", save);
+  $("#btn-donate-edit").addEventListener("click", openDonate);
   $("#form").addEventListener("submit", (e) => { e.preventDefault(); save(); });
   $("#btn-delete").addEventListener("click", async () => {
     if (!state.editingId) return;
@@ -944,7 +955,11 @@ function bindHome() {
   $("#btn-settings").addEventListener("click", () => chrome.runtime.openOptionsPage());
   $("#btn-lang").addEventListener("click", toggleLang);
   $("#btn-donate").addEventListener("click", openDonate);
-  $("#btn-donate-foot").addEventListener("click", openDonate);
+  $("#btn-review-go").addEventListener("click", async () => {
+    await hideReviewPrompt();
+    openStoreReview();
+  });
+  $("#btn-review-hide").addEventListener("click", hideReviewPrompt);
 }
 
 async function init() {

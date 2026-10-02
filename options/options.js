@@ -1,4 +1,4 @@
-import { loadEvents, saveEvents, loadSettings, saveSettings, buildExport, parseImport, mergeEvents } from "../src/store.js";
+import { loadEvents, saveEvents, loadSettings, saveSettings, buildExport, parseImport, mergeEvents, STORE_REVIEW_URL } from "../src/store.js";
 import { t, initI18n, setLang, resolveLang, applyDom } from "../src/i18n.js";
 import { USDT_WALLETS } from "../src/pro.js";
 
@@ -180,6 +180,7 @@ async function init() {
   renderWallets();
   initNotification();
   initBackup();
+  $("#btn-review").addEventListener("click", () => chrome.tabs.create({ url: STORE_REVIEW_URL }));
   await refreshCount();
   if (location.hash === "#donate") {
     $("#donate-section")?.scrollIntoView({ behavior: "smooth", block: "start" });

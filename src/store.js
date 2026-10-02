@@ -57,6 +57,8 @@ export function ruleDays(rule) {
   return rule.n * UNIT_DAYS[rule.unit];
 }
 
+export const STORE_REVIEW_URL = "https://chromewebstore.google.com/detail/glilceccaiicdbjgmelhlbdbiebmnmeh/reviews";
+
 export const DEFAULT_SETTINGS = {
   language: "auto",      // auto | zh | en
   remindTime: "09:00",   // 每日提醒时间 HH:MM
@@ -64,6 +66,7 @@ export const DEFAULT_SETTINGS = {
   badge: "top",          // top: 图标角标显示首个事件天数；none: 不显示
   lastCheckDate: "",     // 上次执行提醒检查的日期
   notified: {},          // 已发送提醒记录 { "eventId|date|offset": true }
+  reviewPromptHidden: false, // 首页评价提示被关掉后不再出现
 };
 
 export function tagColor(name) {
@@ -188,7 +191,7 @@ export function enforceSinglePin(events, keepId) {
 
 /** 导出为 JSON 文本。 */
 export function buildExport(events, settings) {
-  const { notified, lastCheckDate, ...userSettings } = settings || {};
+  const { notified, lastCheckDate, reviewPromptHidden, ...userSettings } = settings || {};
   const payload = {
     ...DATA_FORMAT,
     exportedAt: new Date().toISOString(),
