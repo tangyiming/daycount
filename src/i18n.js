@@ -11,7 +11,7 @@ const ordinal = (n) => {
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 const zh = {
-  "app.name": "倒数日",
+  "app.name": "DayCount",
   "app.tagline": "设置与数据备份。所有数据只保存在本机浏览器中，不会上传到任何服务器。",
 
   "common.new": "新建",
@@ -26,7 +26,7 @@ const zh = {
   "home.empty.cta": "添加第一个事件",
   "home.foot": "已保存 {n} 个 · 只存在这台电脑",
   "home.donate.title": "打赏开发者",
-  "home.review.title": "觉得倒数日好用吗？",
+  "home.review.title": "觉得 DayCount 好用吗？",
   "home.review.desc": "去 Chrome 商店留个评价，帮更多人看到。",
   "home.review.go": "去评价",
   "home.review.hide": "关闭",
@@ -169,15 +169,15 @@ const zh = {
   "notif.ann": "（{v}）",
   "notif.every.title": "{title} 已经 {v}",
   "notif.every.body": "已经 {n} 天 · 从 {date} 至今",
-  "notif.test.title": "倒数日 · 测试通知",
+  "notif.test.title": "DayCount · 测试通知",
   "notif.test.body": "通知工作正常。今天是 {date}",
 
-  "opt.title": "倒数日 · 设置与数据",
+  "opt.title": "DayCount · 设置与数据",
   "opt.language": "界面语言",
   "opt.language.desc": "Language of the interface",
   "opt.language.auto": "跟随浏览器",
   "opt.donate": "请开发者喝杯咖啡",
-  "opt.donate.desc": "倒数日一个人做，没有广告，也不卖你的数据。每天打开浏览器能看见重要日子，就是它存在的意义。觉得有用的话，请随意打赏一点 USDT——1 枚也特别够意思。功能全部免费，不打赏也能一直用。",
+  "opt.donate.desc": "DayCount 一个人做，没有广告，也不卖你的数据。每天打开浏览器能看见重要日子，就是它存在的意义。觉得有用的话，请随意打赏一点 USDT——1 枚也特别够意思。功能全部免费，不打赏也能一直用。",
   "opt.donate.hint": "请认准链名再转（BSC / Solana / Tron）。金额随意，谢谢你让这个小工具活得更久。",
   "opt.donate.copy": "复制地址",
   "opt.donate.copied": "地址已复制，谢谢你！",
